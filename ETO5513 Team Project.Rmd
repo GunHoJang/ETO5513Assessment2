@@ -20,6 +20,49 @@ library(broom)
 
 ## Section 1
 
+This section will consider the macro-level overview of the decadal average surface temperature globally. The following research questions will be addressed:
+
+1.  What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
+2.  Using regression analysis techniques, what is the expected temperature change in the coming decades?
+
+### Research Question 1: What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
+
+To prepare the dataset for analysis, it can first be loaded into a data frame labelled `decadal_avg_surface_temp`.
+
+```{r loading dataframe}
+# Loading the 'decadal average surface temperatures' dataset from Our World in Data into a data frame
+
+decadal_avg_surface_temp <- read.csv("Data/decadal-average-surface-temperature.csv")
+```
+
+The column types for each variable of the dataset can be observed, as such:
+
+```{r column types, echo = FALSE}
+# Observing the column types for each of the variables
+str(decadal_avg_surface_temp)
+```
+
+Furthermore, whether any N/A values exist within the dataset can be determined, as follows:
+
+```{r missing values}
+# Determining whether there are N/A values within the dataset
+sum(is.na(decadal_avg_surface_temp))
+```
+
+The zero indicates that there are no N/A values to consider, and therefore the rest of the data cleaning procedure can be completed. For the dataset to be prepared for analysis, the column header names will need to be addressed, and the 'Code' column will be removed. This particular column is redundant as the Country's names will be a sufficient source of identification.
+
+```{r data cleaning procedure}
+# Renaming the columns and removing the 'Code' column
+decadal_avg_surface_temp <- decadal_avg_surface_temp %>% 
+  select(-Code) %>% 
+  rename(
+    `Country` = `Entity`,
+    `Decadal Average Surface Temperature` = `Decadal.average.surface.temperature`
+  )
+```
+
+### Research Question 2: Using regression analysis techniques, what is the expected temperature change in the coming decades?
+
 ## Section 2
 
 ## Conclusion
