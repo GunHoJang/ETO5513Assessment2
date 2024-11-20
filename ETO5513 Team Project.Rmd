@@ -20,14 +20,14 @@ library(broom)
 
 ## Section 1
 
-This section will consider the macro-level overview of the decadal average surface temperature globally. The following research questions will be addressed:
+This section examines the macro-level overview of the decadal average surface temperature globally. The following research questions will be addressed:
 
 1.  What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
 2.  Using regression analysis techniques, what is the expected temperature change in the coming decades?
 
 ### Research Question 1: What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
 
-To prepare the dataset for analysis, it can first be loaded into a data frame labelled `decadal_avg_surface_temp`.
+To prepare the dataset for analysis, it is first loaded into a data frame labelled `decadal_avg_surface_temp`.
 
 ```{r loading dataframe}
 # Loading the 'decadal average surface temperatures' dataset from Our World in Data into a data frame
@@ -35,21 +35,21 @@ To prepare the dataset for analysis, it can first be loaded into a data frame la
 decadal_avg_surface_temp <- read.csv("Data/decadal-average-surface-temperature.csv")
 ```
 
-The column types for each variable of the dataset can be observed, as such:
+The column types for each variable in the dataset can be observed, as follows:
 
 ```{r column types, echo = FALSE}
-# Observing the column types for each of the variables
+# Observing the column types for each variable
 str(decadal_avg_surface_temp)
 ```
 
-Furthermore, whether any N/A values exist within the dataset can be determined, as follows:
+Next, whether any missing (N/A) values exist within the dataset can be determined using the following code:
 
 ```{r missing values}
 # Determining whether there are N/A values within the dataset
 sum(is.na(decadal_avg_surface_temp))
 ```
 
-The zero indicates that there are no N/A values to consider, and therefore the rest of the data cleaning procedure can be completed. For the dataset to be prepared for analysis, the column header names will need to be addressed, and the 'Code' column will be removed. This particular column is redundant as the Country's names will be a sufficient source of identification.
+The output of zero indicates that there are no missing (N/A) values, and therefore no further handling of missing data is required. To prepare the dataset for analysis, the column header names will be addressed, and the 'Code' column will be removed as it is redundant. The Country column will be sufficient for identification.
 
 ```{r data cleaning procedure}
 # Renaming the columns and removing the 'Code' column
@@ -60,6 +60,56 @@ decadal_avg_surface_temp <- decadal_avg_surface_temp %>%
     `Decadal Average Surface Temperature` = `Decadal.average.surface.temperature`
   )
 ```
+
+The decadal trends between 1940 and 2010 for the global average surface temperature are summarised as follows:
+
+```{r decadal trends- table}
+# Grouping dataset by Year and calculating the average surface temperature 
+decadal_trends <- decadal_avg_surface_temp %>% 
+  group_by(Year) %>% 
+  summarise(`Average Surface Temperature` = mean(`Decadal Average Surface Temperature`))
+
+# Representing decadal trends in tabular form
+kable(
+  decadal_trends,
+  col.names = c("Decade", "Global Average Surface Temperature (°C)"),
+  caption = "Global Average Surface Temperature by Decade (1940-2010)"
+)
+```
+
+The table above provides an overview of average global surface temperatures per decade.
+
+A box-and-whisker plot visualisation was selected to represent the distribution of global average surface temperatures across the decades, and to highlight any outliers that appear in the `decadal_avg_surface_temp` dataset. The mean values from the table have also be included in red.
+
+```{r decadal trends - graph}
+ggplot(decadal_avg_surface_temp, aes(x = as.factor(`Year`), y = `Decadal Average Surface Temperature`)) +
+  geom_boxplot() +
+  stat_summary(
+    fun = mean, 
+    geom = "point",
+    size = 2,
+    color = "red"
+    ) +
+  stat_summary(
+    fun = mean, 
+    geom = "text",
+    aes(label = round(after_stat(y), 2)),
+    vjust = 2,
+    color = "red"
+    ) +
+  labs(
+    title = "Box-and-Whisker Plot of Average Surface Temperatures by Year",
+    x = "Year",
+    y = "Average Global Average Surface Temperature (°C)"
+  )
+
+```
+
+From the table outputs and the box-and-whisker plot visualisation, a steady increase in global average surface temperatures is observed over the 70-year period, from 17.51°C in 1940 to 18.83°C in 2010. This represents a 1.32°C increase globally.
+
+Although this may appear marginal, the United Nations has emphasised that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (https://www.un.org/en/climatechange/science/climate-issues/degrees-matter#:~:text=Every%20fraction%20of%20a%20degree,extremes%20and%20risks%20become%20larger).
+
+In the visualisation, a single outlier is present in the data for all decades. This outlier is attributable to Greenland, a country located near the Arctic Circle. However, despite this proximity to the polar regions, Greenland has also reported increases in average surface temperatures during the observed period between 1940 and 2010.
 
 ### Research Question 2: Using regression analysis techniques, what is the expected temperature change in the coming decades?
 
