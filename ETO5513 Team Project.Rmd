@@ -27,9 +27,9 @@ temp_data <- read.csv("~/Desktop/ETO5513A2/ETO5513Assessment2/Data/decadal-avera
 
 ## Section 2 - Micro level - Rylie Douglas
 ### Research Questions
-1. How do temperatures compare across different countries in our time period?
+1. What are the patterns of temperature change across different climatic regions during this time period?
 
-2. Which countries show the most significant temperature variability?
+2. Which countries experienced the most unstable or fluctuating temperatures during this time period?
 
 ### Results and Analysis
 
@@ -73,7 +73,8 @@ temp_data %>%
     caption = "Shows the 10 countries with largest absolute temperature change"
   ) +
   scale_x_continuous(breaks = unique(temp_data$Year)) +
-  scale_color_brewer(palette = "Set3")  # Using a color palette that's easier to distinguish
+  scale_y_continuous(breaks = seq(0, 30, by = 5)) +
+  scale_color_brewer(palette = "Spectral")
 ```
 
 ```{r change-table}
@@ -94,3 +95,56 @@ temp_changes %>%
   ) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+#### Research Question 2: Temperature variability
+```{r variability-analysis, fig.width=12, fig.height=6}
+# Calculate temperature variability metrics
+variability_analysis <- temp_data %>%
+  group_by(Entity) %>%
+  summarise(
+    Temp_SD = sd(Decadal.average.surface.temperature),
+    Temp_Range = max(Decadal.average.surface.temperature) - 
+                 min(Decadal.average.surface.temperature),
+    Temp_CV = (sd(Decadal.average.surface.temperature) / 
+               mean(Decadal.average.surface.temperature)) * 100
+  ) %>%
+  arrange(desc(Temp_SD))
+
+# Create figure 2: Top 15 most variable countries with enhanced width
+ggplot(head(variability_analysis, 15), 
+       aes(x = reorder(Entity, Temp_SD), y = Temp_SD)) +
+  geom_bar(stat = "identity", fill = "#8B0000", alpha = 0.7) +
+  coord_flip() +
+  theme_minimal() +
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold"),
+    panel.grid.minor = element_blank(),
+    plot.margin = margin(t = 20, r = 20, b = 20, l = 20)
+  ) +
+  labs(
+    title = "Figure 2: 15 Countries with Highest Temperature Variability",
+    x = "Country",
+    y = "Temperature Standard Deviation (°C)",
+    caption = "Higher values indicate greater temperature fluctuations"
+  )
+```
+```{r variability-table}
+# Table 2: Detailed variability metrics for top 10 countries
+head(variability_analysis, 10) %>%
+  mutate(
+    Rank = row_number(),
+    Temp_SD = round(Temp_SD, 2),
+    Temp_Range = round(Temp_Range, 2),
+    Temp_CV = round(Temp_CV, 2)
+  ) %>%
+  select(Rank, Entity, Temp_SD, Temp_Range, Temp_CV) %>%
+  kable(
+    caption = "Table 2: Top 10 Countries with Highest Temperature Variability",
+    col.names = c("Rank", "Country", "Standard Deviation (°C)", 
+                  "Temperature Range (°C)", "Coefficient of Variation (%)")
+  ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+
