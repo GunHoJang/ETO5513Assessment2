@@ -107,11 +107,87 @@ ggplot(decadal_avg_surface_temp, aes(x = as.factor(`Year`), y = `Decadal Average
 
 From the table outputs and the box-and-whisker plot visualisation, a steady increase in global average surface temperatures is observed over the 70-year period, from 17.51°C in 1940 to 18.83°C in 2010. This represents a 1.32°C increase globally.
 
-Although this may appear marginal, the United Nations has emphasised that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (https://www.un.org/en/climatechange/science/climate-issues/degrees-matter#:~:text=Every%20fraction%20of%20a%20degree,extremes%20and%20risks%20become%20larger).
+Although this may appear marginal, the United Nations has emphasised that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (<https://www.un.org/en/climatechange/science/climate-issues/degrees-matter#>:\~:text=Every%20fraction%20of%20a%20degree,extremes%20and%20risks%20become%20larger).
 
 In the visualisation, a single outlier is present in the data for all decades. This outlier is attributable to Greenland, a country located near the Arctic Circle. However, despite this proximity to the polar regions, Greenland has also reported increases in average surface temperatures during the observed period between 1940 and 2010.
 
 ### Research Question 2: Using regression analysis techniques, what is the expected temperature change in the coming decades?
+
+To forecast the change in global average surface temperature over the coming decades, a simple linear regression model was chosen. This model examines the relationship between the Average Surface Temperature and Year, allowing for predictions to be made based on the historical data.
+
+```{r linear model - scatterplot}
+# Constructing the linear model to observe the relationship between the two variables, Decadal Average Surface Temperature and Year
+linear_model <- lm(`Decadal Average Surface Temperature` ~ Year, data = decadal_avg_surface_temp)
+
+# Plotting a scatterplot with a linear regression line visualised
+ggplot(decadal_avg_surface_temp, aes(x = `Year`, y = `Decadal Average Surface Temperature`)) +
+  geom_point() +
+  geom_jitter(
+    width = 0.2, 
+    height = 0, 
+    alpha = 0.6
+    ) +
+  geom_smooth(
+    method = "lm",  
+    se = TRUE, 
+    color = "red", 
+    linetype = "dashed", 
+    linewidth = 1
+    ) +
+  labs(
+    title = "Linear Regression on Decadal Average Surface Temperature Data",
+    x = "Year",
+    y = "Average Surface Temperature (°C)"
+  )
+```
+
+The scatterplot and regression line provides a consistent positive trend in global average surface temperatures over time. This aligns with what was previously observed in the box-and-whisker plot from Research Question 1.
+
+In order to assess the reliability of the linear model, we can examine the summary table below:
+
+```{r linear model - summary table, echo = FALSE}
+# Extracting coefficients and creating a summary table using tidy function
+linear_model_summary <- tidy(linear_model)
+
+kable(linear_model_summary,
+      col.names = c("Term", "Estimate", "Std. Error", "t-value", "p-value"),
+      caption = "Linear Regression Model Summary"
+      )
+```
+
+The summary table provides the following insights:
+
+-   The slope (Year) indicates a rate of increase in the temperature of 0.0187°C per year.
+
+-   The Intercept has a p-value of 0.321, and this indicates that it is not statistically significant using null hypothesis testing. This is expected as it is not the focus of this analysis.
+
+-   The Year variable has a p-value of 0.0525, which suggests a statistically significant relationship with year and temperature. However, as the p-value is slightly above the threshold of 0.05, this relationship is marginal, and it only weakly rejects the null hypothesis at the 95% confidence level.
+
+The linear regression model predicts a gradual increase of 0.0187°C per year, and this can be observed for the next several decades (2020, 2030, 2040, and 2050).
+
+```{r predictions, echo = FALSE}
+# Creating data frame to specify the years for prediction
+future_years <- data.frame(Year = c(2020, 2030, 2040, 2050))
+
+# Predicting the temperatures for the next several decades using the linear model
+future_years$Predicted_Temperature <- predict(linear_model, newdata = future_years)
+
+# Tabulating the predicted outputs
+kable(future_years,
+      col.names = c("Year", "Predicted Temperature (°C)"),
+      caption = "Predicted Temperatures for Next Several Decades"
+      )
+```
+
+By 2050, the predicted global average surface temperature is approximately 19.40°C. However, the relationship between year and temperature is marginal, and to enhance the reliability of these predictions, further analysis is required to:
+
+1.  Incorporate additional human-induced or natural factors (e.g. greenhouse gas emissions or ocean currents).
+
+2.  Consider non-linear modelling to capture more complex temperature dynamics.
+
+3.  Compare the predictions with future observed data to assess the model's validity.
+
+## 
 
 ## Section 2
 
