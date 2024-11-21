@@ -13,20 +13,25 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(renv)
 ```
 
 ```{r load-data}
 # Read the data
-temp_data <- read.csv("~/Desktop/ETO5513A2/ETO5513Assessment2/Data/decadal-average-surface-temperature.csv")
+temp_data <- read.csv("Data/decadal-average-surface-temperature.csv")
 ```
 # Introduction
 
+# Data Description
+This analysis uses decadal surface temperature data (1940-2010) from Our World in Data enabling the analysis of long-term temperature patterns. The dataset spans from 1940 to 2010, measuring temperature changes across different countries globally through three main variables: country names, decadal time points, and mean surface temperatures in degrees Celsius (°C).
 
 ## Section 1 - Macro Level - Gun Ho Jang
 
 
 ## Section 2 - Micro level - Rylie Douglas
 ### Research Questions
+This section investigates temperature variations at the country level, focusing on both long-term changes and temperature stability. The analysis addresses two primary research questions:
+
 1. What are the patterns of temperature change across different climatic regions during this time period?
 
 2. Which countries experienced the most unstable or fluctuating temperatures during this time period?
@@ -64,7 +69,9 @@ temp_data %>%
     axis.title = element_text(size = 12),
     plot.title = element_text(size = 14, face = "bold"),
     panel.grid.minor = element_blank(),
-    plot.margin = margin(t = 20, r = 20, b = 20, l = 20)
+    plot.margin = margin(t = 20, r = 20, b = 20, l = 20),
+    panel.background = element_rect(fill = "white", color = "black"),
+    plot.background = element_rect(fill = "white", color = "black")
   ) +
   labs(
     title = "Figure 1: Temperature Trends for Countries with Greatest Change (1940-2010)",
@@ -90,10 +97,10 @@ temp_changes %>%
   select(Rank, Entity, start_temp, end_temp, total_change) %>%
   kable(
     caption = "Table 1: Countries with Greatest Temperature Change (1940-2010)",
-    col.names = c("Rank", "Country", "1940 Mean Temperature (°C)", 
+    col.names = c("Rank", "Country", "1940 Mean Temperature (°C)",
                   "2010 Mean Temperature (°C)", "Total Change (°C)")
   ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kable_styling(bootstrap_options = c("striped", "hover", "bordered"))
 ```
 #### Research Question 2: Temperature variability
 ```{r variability-analysis, fig.width=12, fig.height=6}
@@ -110,7 +117,7 @@ variability_analysis <- temp_data %>%
   arrange(desc(Temp_SD))
 
 # Create figure 2: Top 15 most variable countries with enhanced width
-ggplot(head(variability_analysis, 15), 
+ggplot(head(variability_analysis, 15),
        aes(x = reorder(Entity, Temp_SD), y = Temp_SD)) +
   geom_bar(stat = "identity", fill = "#8B0000", alpha = 0.7) +
   coord_flip() +
@@ -120,7 +127,9 @@ ggplot(head(variability_analysis, 15),
     axis.title = element_text(size = 12),
     plot.title = element_text(size = 14, face = "bold"),
     panel.grid.minor = element_blank(),
-    plot.margin = margin(t = 20, r = 20, b = 20, l = 20)
+    plot.margin = margin(t = 20, r = 20, b = 20, l = 20),
+    panel.background = element_rect(fill = "white", color = "black"),
+    plot.background = element_rect(fill = "white", color = "black")
   ) +
   labs(
     title = "Figure 2: 15 Countries with Highest Temperature Variability",
@@ -141,10 +150,11 @@ head(variability_analysis, 10) %>%
   select(Rank, Entity, Temp_SD, Temp_Range, Temp_CV) %>%
   kable(
     caption = "Table 2: Top 10 Countries with Highest Temperature Variability",
-    col.names = c("Rank", "Country", "Standard Deviation (°C)", 
+    col.names = c("Rank", "Country", "Standard Deviation (°C)",
                   "Temperature Range (°C)", "Coefficient of Variation (%)")
   ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kable_styling(bootstrap_options = c("striped", "hover", "bordered"))
 ```
+# Conclusion
 
-
+# References
