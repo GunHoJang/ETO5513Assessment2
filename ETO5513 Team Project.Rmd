@@ -3,13 +3,15 @@ title: "ETO5513 Team Project"
 author: "Gun Ho Jang & Rylie Douglas"
 date: "`r Sys.Date()`"
 output: html_document
+bibliography: references.bib
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = 'center')
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, fig.align = 'center')
 ```
 
-```{r libraries, include = FALSE, message = FALSE, warning = FALSE}
+```{r libraries, include = FALSE}
+# Loading the required libraries
 library(renv)
 library(tidyverse)
 library(knitr)
@@ -18,38 +20,31 @@ library(broom)
 
 ## Introduction
 
-## Section 1
-
-This section examines the macro-level overview of the decadal average surface temperature globally. The following research questions will be addressed:
+The macro-level overview of the decadal average surface temperature globally will be addressed through the following questions:
 
 1.  What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
 2.  Using regression analysis techniques, what is the expected temperature change in the coming decades?
 
+## Section 1
+
 ### Research Question 1: What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
 
-To prepare the dataset for analysis, it is first loaded into a data frame labelled `decadal_avg_surface_temp`.
+The dataset is prepared for analysis by loading into a data frame.
 
 ```{r loading dataframe}
-# Loading the 'decadal average surface temperatures' dataset from Our World in Data into a data frame
-
+# Loading the 'decadal average surface temperatures' dataset into a data frame
 decadal_avg_surface_temp <- read.csv("Data/decadal-average-surface-temperature.csv")
 ```
 
-The column types for each variable in the dataset can be observed, as follows:
-
-```{r column types, echo = FALSE}
-# Observing the column types for each variable
-str(decadal_avg_surface_temp)
-```
-
-Next, whether any missing (N/A) values exist within the dataset can be determined using the following code:
+Next, the dataset is checked for any missing (N/A) values using the following code:
 
 ```{r missing values}
-# Determining whether there are N/A values within the dataset
-sum(is.na(decadal_avg_surface_temp))
+# Checking whether there are any missing values within the dataset
+sum_na <- sum(is.na(decadal_avg_surface_temp))
+print(paste("The dataset contains", sum_na, "N/A values."))
 ```
 
-The output of zero indicates that there are no missing (N/A) values, and therefore no further handling of missing data is required. To prepare the dataset for analysis, the column header names will be addressed, and the 'Code' column will be removed as it is redundant. The Country column will be sufficient for identification.
+No missing values were found, so other data cleaning can be completed: the column headers are renamed, and the 'Code' column is removed as the Country column will be sufficient for country identification.
 
 ```{r data cleaning procedure}
 # Renaming the columns and removing the 'Code' column
@@ -67,21 +62,20 @@ The decadal trends between 1940 and 2010 for the global average surface temperat
 # Grouping dataset by Year and calculating the average surface temperature 
 decadal_trends <- decadal_avg_surface_temp %>% 
   group_by(Year) %>% 
-  summarise(`Average Surface Temperature` = mean(`Decadal Average Surface Temperature`))
+  summarise(`Average Surface Temperature` = round(mean(`Decadal Average Surface Temperature`), 2))
 
-# Representing decadal trends in tabular form
+# Representing decadal trends in a table
 kable(
   decadal_trends,
   col.names = c("Decade", "Global Average Surface Temperature (°C)"),
-  caption = "Global Average Surface Temperature by Decade (1940-2010)"
+  caption = "Table 1: Global Average Surface Temperature by Decade (1940-2010)"
 )
 ```
 
-The table above provides an overview of average global surface temperatures per decade.
+A box-and-whisker plot visualisation was selected to represent the distribution of global average surface temperatures across the decades, and to highlight any outliers that appear in the dataset.
 
-A box-and-whisker plot visualisation was selected to represent the distribution of global average surface temperatures across the decades, and to highlight any outliers that appear in the `decadal_avg_surface_temp` dataset. The mean values from the table have also be included in red.
-
-```{r decadal trends - graph}
+```{r decadal trends - graph, fig.width = 8, fig.height = 6}
+# Plotting the global average surface temperatures over time in a box-and-whisker plot
 ggplot(decadal_avg_surface_temp, aes(x = as.factor(`Year`), y = `Decadal Average Surface Temperature`)) +
   geom_boxplot() +
   stat_summary(
@@ -96,58 +90,68 @@ ggplot(decadal_avg_surface_temp, aes(x = as.factor(`Year`), y = `Decadal Average
     aes(label = round(after_stat(y), 2)),
     vjust = 2,
     color = "red"
-    ) +
+    )  +
+  theme_minimal() +
   labs(
     title = "Box-and-Whisker Plot of Average Surface Temperatures by Year",
     x = "Year",
-    y = "Average Global Average Surface Temperature (°C)"
+    y = "Average Global Average Surface Temperature (°C)",
+    caption = "The mean values have been included as red dot points."
   )
-
 ```
 
-From the table outputs and the box-and-whisker plot visualisation, a steady increase in global average surface temperatures is observed over the 70-year period, from 17.51°C in 1940 to 18.83°C in 2010. This represents a 1.32°C increase globally.
+Both the table and the box-and-whisker plot show a 1.32°C rise in global average surface temperatures from 1940 to 2010. Although this appears small, the United Nations has warned that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (@un_1_5c_matters).
 
-Although this may appear marginal, the United Nations has emphasised that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (<https://www.un.org/en/climatechange/science/climate-issues/degrees-matter#>:\~:text=Every%20fraction%20of%20a%20degree,extremes%20and%20risks%20become%20larger).
-
-In the visualisation, a single outlier is present in the data for all decades. This outlier is attributable to Greenland, a country located near the Arctic Circle. However, despite this proximity to the polar regions, Greenland has also reported increases in average surface temperatures during the observed period between 1940 and 2010.
+The sole outlier points in the plot is attributable to Greenland and the country's Arctic conditions. However, the country has also reported a worrisome trend of warming in past decades.
 
 ### Research Question 2: Using regression analysis techniques, what is the expected temperature change in the coming decades?
 
-To forecast the change in global average surface temperature over the coming decades, a simple linear regression model was chosen. This model examines the relationship between the Average Surface Temperature and Year, allowing for predictions to be made based on the historical data.
+A simple linear regression model was used to analyse the relationship between the temperature and time variables, enabling prediction of future trends based on the historical data.
 
-```{r linear model - scatterplot}
-# Constructing the linear model to observe the relationship between the two variables, Decadal Average Surface Temperature and Year
+```{r linear model - scatterplot, fig.width = 9, fig.height = 6}
+# Constructing the linear model to observe the relationship between the two variables, Average Surface Temperature and Year
 linear_model <- lm(`Decadal Average Surface Temperature` ~ Year, data = decadal_avg_surface_temp)
 
 # Plotting a scatterplot with a linear regression line visualised
 ggplot(decadal_avg_surface_temp, aes(x = `Year`, y = `Decadal Average Surface Temperature`)) +
-  geom_point() +
-  geom_jitter(
-    width = 0.2, 
-    height = 0, 
-    alpha = 0.6
+  geom_line(
+    aes(group = `Country`),
+    color = "grey",
+    alpha = 0.5
     ) +
   geom_smooth(
     method = "lm",  
     se = TRUE, 
     color = "red", 
     linetype = "dashed", 
-    linewidth = 1
+    linewidth = 1.2
     ) +
+  scale_x_continuous(
+    breaks = seq(min(decadal_avg_surface_temp$Year), max(decadal_avg_surface_temp$Year), by = 10)
+  ) +
+  theme_minimal() +
+  theme(
+    plot.background = element_rect(fill = "white", color = NA)
+  ) +
   labs(
     title = "Linear Regression on Decadal Average Surface Temperature Data",
     x = "Year",
-    y = "Average Surface Temperature (°C)"
+    y = "Average Surface Temperature (°C)",
+    caption = "Grey lines represent individual country trends while red line represents regression."
   )
 ```
 
-The scatterplot and regression line provides a consistent positive trend in global average surface temperatures over time. This aligns with what was previously observed in the box-and-whisker plot from Research Question 1.
-
-In order to assess the reliability of the linear model, we can examine the summary table below:
+The reliability of the model is assessed in the summary table below.
 
 ```{r linear model - summary table, echo = FALSE}
 # Extracting coefficients and creating a summary table using tidy function
-linear_model_summary <- tidy(linear_model)
+linear_model_summary <- tidy(linear_model) %>% 
+  mutate(
+    estimate = round(estimate, 4),
+    std.error = round(std.error, 4),
+    statistic = round(statistic, 4),
+    p.value = round(p.value, 4)
+  )
 
 kable(linear_model_summary,
       col.names = c("Term", "Estimate", "Std. Error", "t-value", "p-value"),
@@ -157,20 +161,22 @@ kable(linear_model_summary,
 
 The summary table provides the following insights:
 
--   The slope (Year) indicates a rate of increase in the temperature of 0.0187°C per year.
+-   The slope (Year) indicates a temperature increase of 0.0187°C per year.
 
--   The Intercept has a p-value of 0.321, and this indicates that it is not statistically significant using null hypothesis testing. This is expected as it is not the focus of this analysis.
+-   The Intercept has a p-value of 0.321, showing no statistical significance under null hypothesis testing. This is to be expected as it is not the focus of this analysis.
 
--   The Year variable has a p-value of 0.0525, which suggests a statistically significant relationship with year and temperature. However, as the p-value is slightly above the threshold of 0.05, this relationship is marginal, and it only weakly rejects the null hypothesis at the 95% confidence level.
+-   The Year variable's p-value of 0.0525 suggests a marginally significant relationship with the temperature. This relationship is only marginal as the p-value slightly exceeds the threshold of 0.05, weakly rejecting the null hypothesis at the 95% confidence level.
 
-The linear regression model predicts a gradual increase of 0.0187°C per year, and this can be observed for the next several decades (2020, 2030, 2040, and 2050).
-
-```{r predictions, echo = FALSE}
-# Creating data frame to specify the years for prediction
+```{r predictions for future decades, echo = FALSE}
+# Creating data frame to specify the future years for prediction
 future_years <- data.frame(Year = c(2020, 2030, 2040, 2050))
 
 # Predicting the temperatures for the next several decades using the linear model
 future_years$Predicted_Temperature <- predict(linear_model, newdata = future_years)
+
+# Rounding all predicted temperatures to 2 decimal places
+future_years <- future_years %>% 
+  mutate(Predicted_Temperature = round(Predicted_Temperature, 2))
 
 # Tabulating the predicted outputs
 kable(future_years,
@@ -179,15 +185,13 @@ kable(future_years,
       )
 ```
 
-By 2050, the predicted global average surface temperature is approximately 19.40°C. However, the relationship between year and temperature is marginal, and to enhance the reliability of these predictions, further analysis is required to:
+By 2050, the global average surface temperature is projected to reach approximately 19.40°C. However, the marginal relationship between year and temperature highlights the need for further analysis, including:
 
-1.  Incorporate additional human-induced or natural factors (e.g. greenhouse gas emissions or ocean currents).
+1.  Incorporating additional factors such as greenhouse gas emissions or the effects of ocean currents.
 
-2.  Consider non-linear modelling to capture more complex temperature dynamics.
+2.  Exploring non-linear modelling to capture complex temperature dynamics.
 
-3.  Compare the predictions with future observed data to assess the model's validity.
-
-## 
+3.  Validating predictions with future observed data to improve the model's reliability.
 
 ## Section 2
 
