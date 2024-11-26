@@ -20,12 +20,12 @@ library(broom)
 
 ## Introduction
 
+## Section 1
+
 The macro-level overview of the decadal average surface temperature globally will be addressed through the following questions:
 
 1.  What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
 2.  Using regression analysis techniques, what is the expected temperature change in the coming decades?
-
-## Section 1
 
 ### Research Question 1: What is the global trend for average surface temperatures by decade (from 1940 to 2010)?
 
@@ -100,9 +100,9 @@ ggplot(decadal_avg_surface_temp, aes(x = as.factor(`Year`), y = `Decadal Average
   )
 ```
 
-Both the table and the box-and-whisker plot show a 1.32°C rise in global average surface temperatures from 1940 to 2010. Although this appears small, the United Nations has warned that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (@un_1_5c_matters).
+Both the table and the box-and-whisker plot demonstrate a steady increase in temperature from 1940 to 2010. The distribution shows an upward shift over the decades, with mean temperatures rising by 1.32°C during the observed period. Although this change appears small, the United Nations has warned that "every fraction of a degree of warming can result in discernible increases in the intensity and frequency of temperature and precipitation extremes" (@un_1_5c_matters).
 
-The sole outlier points in the plot is attributable to Greenland and the country's Arctic conditions. However, the country has also reported a worrisome trend of warming in past decades.
+The single low-temperature outlier in the plot corresponds with Greenland, reflecting the country's Arctic conditions. However, even it has also exhibited a concerning warming trend during the observed period.
 
 ### Research Question 2: Using regression analysis techniques, what is the expected temperature change in the coming decades?
 
