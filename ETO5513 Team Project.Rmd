@@ -2,10 +2,10 @@
 title: "ETO5513 Team Project"
 author: "Gun Ho Jang & Rylie Douglas"
 date: "`r Sys.Date()`"
+bibliography: references.bib    
+output:
   html_document:
     toc: false
-bibliography: references.bib    
-output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +38,7 @@ The macro-level overview of the decadal average surface temperature globally wil
 
 The dataset is prepared for analysis by loading into a data frame.
 
-```{r loading dataframe - Gun Ho's part}
+```{r loading dataframe - Gun Ho part}
 # Loading the 'decadal average surface temperatures' dataset into a data frame
 decadal_avg_surface_temp <- read.csv("Data/decadal-average-surface-temperature.csv")
 ```
@@ -213,7 +213,7 @@ This section investigates temperature variations at the country level, focusing 
 
 #### Research Question 1: Temperature Comparisons Across Countries
 
-```{r load-data - Rylie's part}
+```{r load-data - Rylie part}
 # Read the data
 temp_data <- read.csv("Data/decadal-average-surface-temperature.csv")
 ```
@@ -343,4 +343,4 @@ Table 2 presents temperature variability through three distinct metrics for the 
 # Conclusion
 
 # References
-Hanssen-Bauer, I., Førland, E. J., Haddeland, I., Hisdal, H., Mayer, S., Nesje, A., Nilsen, J.E.Ø., Sandven, S., Sandø, A.B., Sorteberg, A., & Ådlandsvik, B. (2015). Climate in Norway 2100 – knowledge basis for climate adaptation. NCCS report no. 1/2015. Norwegian Climate Service Centre.
+
