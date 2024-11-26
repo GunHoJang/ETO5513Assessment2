@@ -30,11 +30,11 @@ This analysis uses decadal surface temperature data (1940-2010) from Our World i
 
 ## Section 2 - Micro level - Rylie Douglas
 ### Research Questions
-This section investigates temperature variations at the country level, focusing on both long-term changes and temperature stability. The analysis addresses two primary research questions:
+This section investigates temperature variations at the country level, focusing on both long-term changes and temperature variability. The analysis addresses two primary research questions:
 
 1. What are the patterns of temperature change across different climatic regions during this time period?
 
-2. Which countries experienced the most unstable or fluctuating temperatures during this time period?
+2. Which countries experienced the most unstable or variable temperatures during this time period?
 
 ### Results and Analysis
 
@@ -83,6 +83,7 @@ temp_data %>%
   scale_y_continuous(breaks = seq(0, 30, by = 5)) +
   scale_color_brewer(palette = "Spectral")
 ```
+Figure 1 shows the trajectories of the ten countries with the most substantial temperature changes from 1940 to 2010. It can be seen that there is a slight upward trend of the yearly average  temperatures for these countries over time, revealing particularly notable increases in Nordic regions.
 
 ```{r change-table}
 # Table 1: Temperature changes for top 10 countries
@@ -102,6 +103,8 @@ temp_changes %>%
   ) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "bordered"))
 ```
+Table 1 reveals diverse patterns of temperature change across different climatic regions. Norway experienced the most significant increase of 2.91°C (from -1.70°C to 1.21°C), followed by Iceland with a 2.66°C rise (from -0.45°C to 2.21°C). Niger also shows a significant 2.65°C increase from a much higher average temperature (25.31°C to 27.96°C). It can be seen that cold climate countries (Norway, Iceland and Belarus) and hot climate countries (Niger, Saudi Arabia, Sudan, Eritrea) appear in the top rankings. Total mean temperature changes affected various climatic regions, however cold regions displayed slightly larger absolute changes over the 70-year period.
+
 #### Research Question 2: Temperature variability
 ```{r variability-analysis, fig.width=12, fig.height=6}
 # Calculate temperature variability metrics
@@ -138,6 +141,8 @@ ggplot(head(variability_analysis, 15),
     caption = "Higher values indicate greater temperature fluctuations"
   )
 ```
+Figure 2 displays temperature variability across 15 countries from 1940 to 2010, measured by standard deviation (SD). Nordic countries show the most significant fluctuations, with Norway recording the highest variability (SD = 1.17°C), followed closely by Iceland (SD = 1.10°C). This pattern aligns with previous studies of Scandinavian climate variability, which have shown that Nordic regions experience greater temperature fluctuations due to their atmospheric circulation patterns and geographical position (Hanssen-Bauer et al., 2015). These findings suggest that northern regions, particularly Scandinavia, experienced more unstable temperature patterns compared to other global regions during this period, which is consistent with research showing that high-latitude areas are more sensitive to climate variations.
+
 ```{r variability-table}
 # Table 2: Detailed variability metrics for top 10 countries
 head(variability_analysis, 10) %>%
@@ -155,6 +160,9 @@ head(variability_analysis, 10) %>%
   ) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "bordered"))
 ```
+Table 2 presents temperature variability through three distinct metrics for the top 10 countries: standard deviation measuring absolute variability, temperature range indicating the interval between the extremes and coefficient of variation (CV) indicating relative variability. Norway has the highest standard deviation (1.17°C), temperature range (3.07°C) and has a negative coefficient of variation (-290.82%), which suggests extreme temperature fluctuations around its mean. Iceland shows the next highest CV  of 168.34%. On the other hand, other high ranking countries like Saudi Arabia, Niger, and Yemen exhibit more moderate coefficients between 2-4%, this indicates that their temperature variations were less extreme relative to their higher mean temperatures.
+
 # Conclusion
 
 # References
+Hanssen-Bauer, I., Førland, E. J., Haddeland, I., Hisdal, H., Mayer, S., Nesje, A., Nilsen, J.E.Ø., Sandven, S., Sandø, A.B., Sorteberg, A., & Ådlandsvik, B. (2015). Climate in Norway 2100 – knowledge basis for climate adaptation. NCCS report no. 1/2015. Norwegian Climate Service Centre.
