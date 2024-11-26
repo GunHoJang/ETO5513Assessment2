@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output: 
   html_document:
     toc: false
+bibliography: references.bib    
 ---
 
 ```{r setup, include=FALSE}
@@ -141,7 +142,7 @@ ggplot(head(variability_analysis, 15),
     caption = "Higher values indicate greater temperature fluctuations"
   )
 ```
-Figure 2 displays temperature variability across 15 countries from 1940 to 2010, measured by standard deviation (SD). Nordic countries show the most significant fluctuations, with Norway recording the highest variability (SD = 1.17°C), followed closely by Iceland (SD = 1.10°C). This pattern aligns with previous studies of Scandinavian climate variability, which have shown that Nordic regions experience greater temperature fluctuations due to their atmospheric circulation patterns and geographical position (Hanssen-Bauer et al., 2015). These findings suggest that northern regions, particularly Scandinavia, experienced more unstable temperature patterns compared to other global regions during this period, which is consistent with research showing that high-latitude areas are more sensitive to climate variations.
+Figure 2 displays temperature variability across 15 countries from 1940 to 2010, measured by standard deviation (SD). Nordic countries show the most significant fluctuations, with Norway recording the highest variability (SD = 1.17°C), followed closely by Iceland (SD = 1.10°C). This pattern aligns with previous studies of Scandinavian climate variability, which have shown that Nordic regions experience greater temperature fluctuations due to their atmospheric circulation patterns and geographical position [@hanssen2015climate]. These findings suggest that northern regions, particularly Scandinavia, experienced more unstable temperature patterns compared to other global regions during this period, which is consistent with research showing that high-latitude areas are more sensitive to climate variations.
 
 ```{r variability-table}
 # Table 2: Detailed variability metrics for top 10 countries
