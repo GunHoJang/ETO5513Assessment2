@@ -1,1 +1,3 @@
 # ETO5513Assessment2
+
+This is the submission attempt for Assessment 2: Team Project by Gun Ho Jang and Rylie Douglas. Data folder containing link to dataset has been provided in ZIP folder containing all files required to reproduce the report. The topic of the report observes decadal average surface temperatures and how these temperatures have changed from 1940 to 2010. Gun Ho analysed the data at a macro-level, discovering that steady changes in temperature were observed at a global average. Rylie looked into the micro-level analysis, and it confirmed an upward trend in mean temperatures for specific nations observed.
